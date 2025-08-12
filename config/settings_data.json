@@ -523,12 +523,21 @@
               "badges_title": "ACEITAMOS TODOS OS CARTÕES",
               "badges_text": "Trabalhamos com todas as bandeiras e boleto bancário"
             }
+          },
+          "image_8jTWPg": {
+            "type": "image",
+            "settings": {
+              "shipping_icon": "fa-heart",
+              "badges_title": "CLIENTES SATISFEITOS",
+              "badges_text": "Satisfação 100% Garantida."
+            }
           }
         },
         "block_order": [
           "1557866948237-0",
           "1557866948237-1",
-          "1557866948237-2"
+          "1557866948237-2",
+          "image_8jTWPg"
         ],
         "settings": {
           "badges_size": "40px"
