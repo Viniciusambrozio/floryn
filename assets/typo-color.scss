@@ -1,0 +1,139 @@
+/*===== START MAIN MENU =====*/
+
+
+.site-nav__link--main, .site-nav__link.site-nav__child-link
+{
+  font-size: 11px;
+  font-family: "Montserrat", "HelveticaNeue", "Helvetica Neue", sans-serif;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.mobile-nav__link,
+.mobile-nav__sublist-link {
+  font-family: "Montserrat", "HelveticaNeue", "Helvetica Neue", sans-serif;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+#desktop_currency .currency-picker
+{
+  font-size: 11px;
+  font-family: "Montserrat", "HelveticaNeue", "Helvetica Neue", sans-serif;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.right_side
+{
+  font-size: 11px;
+  font-family: "Montserrat", "HelveticaNeue", "Helvetica Neue", sans-serif;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.head-crt-icon
+{
+  font-size: 11px;
+  vertical-align: text-bottom;
+}
+/*===== END MAIN MENU =====*/
+
+/*===== START IMAGE OVERLAY AND SLIDER HEADING =====*/
+
+
+
+
+.imgsldover
+{
+  font-size: 50px;
+  font-family: Montserrat;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  @media only screen and (max-width: 750px) {
+    font-size: 20px;
+  }
+}
+
+/*===== END IMAGE OVERLAY AND SLIDER HEADING =====*/
+
+/*===== START IMAGE OVERLAY AND SLIDER SUBHEADING =====*/
+
+
+
+
+.imgsldover_sub
+{
+  font-size: 22px;
+  font-family: Montserrat;
+  font-weight: 400;
+  letter-spacing: 0px;
+  text-transform: uppercase;
+  @media only screen and (max-width: 750px) {
+    font-size: 16px;
+  }
+}
+
+
+/*===== END IMAGE OVERLAY AND SLIDER SUBHEADING =====*/
+
+/*===== START TITLE =====*/
+
+
+
+
+.title
+{
+  font-size: 24px;
+  font-family: Montserrat;
+  font-weight: 500;
+  letter-spacing: 0px;
+  text-transform: uppercase;
+}
+
+
+
+
+/*===== END TITLE =====*/
+
+
+/*===== START HEADING =====*/
+
+
+.heading
+{
+  font-size: 22px;
+  font-family: Montserrat;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.heading_with_nosize
+{
+  font-family: Montserrat;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/*===== END HEADING =====*/
+
+
+/*===== START SUBHEADING =====*/
+
+
+
+.subheading
+{
+  font-size: 16px;
+  font-family: Montserrat;
+  font-weight: normal;
+  letter-spacing: 0px;
+  text-transform: none;
+}
+.info_title
+{
+  font-family: Montserrat;
+}
+
+/*===== END HEADING =====*/
+
