@@ -3106,3 +3106,125 @@ function setNewCookie(cname,cvalue,exdays){var d=new Date();d.setTime(d.getTime(
 function getCookie(cname){var name=cname+"=";var decodedCookie=decodeURIComponent(document.cookie);var ca=decodedCookie.split(';');for(var i=0;i<ca.length;i++){var c=ca[i];while(c.charAt(0)==' '){c=c.substring(1)}
 if(c.indexOf(name)==0){return c.substring(name.length,c.length)}}
 return ""}
+
+// Função para atualizar preços das variantes
+function updateVariantPrice(variant, sectionId) {
+  if (!variant) return;
+  
+  var productPriceElement = document.getElementById('ProductPrice-' + sectionId);
+  var comparePriceElement = document.getElementById('ComparePrice-' + sectionId);
+  var saveDiscountElement = document.querySelector('.save_discount_pro');
+  
+  if (productPriceElement) {
+    // Atualizar preço principal
+    productPriceElement.innerHTML = theme.Currency.formatMoney(variant.price, theme.moneyFormat);
+    productPriceElement.setAttribute('content', (variant.price / 100.00).toString());
+  }
+  
+  if (comparePriceElement) {
+    if (variant.compare_at_price && variant.compare_at_price > variant.price) {
+      // Mostrar preço comparativo
+      comparePriceElement.innerHTML = theme.Currency.formatMoney(variant.compare_at_price, theme.moneyFormat);
+      comparePriceElement.classList.remove('hide');
+      
+      // Atualizar desconto
+      if (saveDiscountElement) {
+        var discount = ((variant.compare_at_price - variant.price) / variant.compare_at_price * 100).toFixed(0);
+        saveDiscountElement.querySelector('.per_discount').innerHTML = discount + '{{ "products.product.on_save" | t }}';
+        saveDiscountElement.classList.remove('hide');
+      }
+    } else {
+      // Esconder preço comparativo
+      comparePriceElement.classList.add('hide');
+      if (saveDiscountElement) {
+        saveDiscountElement.classList.add('hide');
+      }
+    }
+  }
+  
+  // Atualizar disponibilidade do botão
+  var addToCartButton = document.getElementById('AddToCart');
+  var addToCartText = document.querySelector('.AddToCartText');
+  
+  if (addToCartButton && addToCartText) {
+    if (variant.available) {
+      addToCartButton.disabled = false;
+      addToCartText.innerHTML = '{{ "products.product.add_to_cart" | t }}';
+    } else {
+      addToCartButton.disabled = true;
+      addToCartText.innerHTML = '{{ "products.product.sold_out" | t }}';
+    }
+  }
+}
+
+// Inicializar listeners para mudanças de variantes
+$(document).ready(function() {
+  // Listener para seletores de opção única
+  $('.single-option-selector').on('change', function() {
+    var form = $(this).closest('form');
+    var productSelect = form.find('[name="id"]');
+    var sectionId = form.data('section');
+    
+    // Obter JSON do produto da seção
+    var productJsonElement = document.getElementById('ProductJson-' + sectionId);
+    if (productSelect.length && productJsonElement) {
+      var productData = JSON.parse(productJsonElement.innerHTML);
+      
+      var selectedOptions = [];
+      form.find('.single-option-selector').each(function() {
+        selectedOptions.push($(this).val());
+      });
+      
+      // Encontrar variante correspondente
+      var selectedVariant = null;
+      for (var i = 0; i < productData.variants.length; i++) {
+        var variant = productData.variants[i];
+        var match = true;
+        
+        for (var j = 0; j < selectedOptions.length; j++) {
+          if (variant.options[j] !== selectedOptions[j]) {
+            match = false;
+            break;
+          }
+        }
+        
+        if (match) {
+          selectedVariant = variant;
+          break;
+        }
+      }
+      
+      if (selectedVariant) {
+        // Atualizar select principal
+        productSelect.val(selectedVariant.id);
+        
+        // Atualizar preços
+        updateVariantPrice(selectedVariant, sectionId);
+      }
+    }
+  });
+  
+  // Listener para select principal de variantes
+  $('[name="id"]').on('change', function() {
+    var variantId = $(this).val();
+    var sectionId = $(this).closest('form').data('section');
+    
+    // Obter JSON do produto da seção
+    var productJsonElement = document.getElementById('ProductJson-' + sectionId);
+    if (productJsonElement && variantId) {
+      var productData = JSON.parse(productJsonElement.innerHTML);
+      var selectedVariant = null;
+      
+      for (var i = 0; i < productData.variants.length; i++) {
+        if (productData.variants[i].id == variantId) {
+          selectedVariant = productData.variants[i];
+          break;
+        }
+      }
+      
+      if (selectedVariant) {
+        updateVariantPrice(selectedVariant, sectionId);
+      }
+    }
+  });
+});
