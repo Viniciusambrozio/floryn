@@ -492,6 +492,7 @@
 <script type="application/json" id="ProductJson-{{ section.id }}">
     {{ product | json }}
 </script>
+<script src="{{ 'variant-price-updater.js' | asset_url }}" defer></script>
 {% endunless %}
 <!-- enable random number-->
 
