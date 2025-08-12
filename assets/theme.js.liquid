@@ -3111,26 +3111,47 @@ return ""}
 function updateVariantPrice(variant, sectionId) {
   if (!variant) return;
   
+  console.log('Atualizando preço para variante:', variant);
+  
   var productPriceElement = document.getElementById('ProductPrice-' + sectionId);
   var comparePriceElement = document.getElementById('ComparePrice-' + sectionId);
   var saveDiscountElement = document.querySelector('.save_discount_pro');
   
   if (productPriceElement) {
-    // Atualizar preço principal
-    productPriceElement.innerHTML = theme.Currency.formatMoney(variant.price, theme.moneyFormat);
+    // Usar formatação simples se theme.Currency não estiver disponível
+    var formattedPrice = variant.price;
+    if (typeof theme !== 'undefined' && theme.Currency && theme.Currency.formatMoney) {
+      formattedPrice = theme.Currency.formatMoney(variant.price, theme.moneyFormat);
+    } else {
+      // Formatação básica para Real brasileiro
+      formattedPrice = 'R$ ' + (variant.price / 100).toFixed(2).replace('.', ',');
+    }
+    
+    productPriceElement.innerHTML = formattedPrice;
     productPriceElement.setAttribute('content', (variant.price / 100.00).toString());
+    console.log('Preço atualizado para:', formattedPrice);
   }
   
   if (comparePriceElement) {
     if (variant.compare_at_price && variant.compare_at_price > variant.price) {
       // Mostrar preço comparativo
-      comparePriceElement.innerHTML = theme.Currency.formatMoney(variant.compare_at_price, theme.moneyFormat);
+      var formattedComparePrice = variant.compare_at_price;
+      if (typeof theme !== 'undefined' && theme.Currency && theme.Currency.formatMoney) {
+        formattedComparePrice = theme.Currency.formatMoney(variant.compare_at_price, theme.moneyFormat);
+      } else {
+        formattedComparePrice = 'R$ ' + (variant.compare_at_price / 100).toFixed(2).replace('.', ',');
+      }
+      
+      comparePriceElement.innerHTML = formattedComparePrice;
       comparePriceElement.classList.remove('hide');
       
       // Atualizar desconto
       if (saveDiscountElement) {
         var discount = ((variant.compare_at_price - variant.price) / variant.compare_at_price * 100).toFixed(0);
-        saveDiscountElement.querySelector('.per_discount').innerHTML = discount + '{{ "products.product.on_save" | t }}';
+        var discountElement = saveDiscountElement.querySelector('.per_discount');
+        if (discountElement) {
+          discountElement.innerHTML = discount + '% OFF';
+        }
         saveDiscountElement.classList.remove('hide');
       }
     } else {
@@ -3144,23 +3165,85 @@ function updateVariantPrice(variant, sectionId) {
   
   // Atualizar disponibilidade do botão
   var addToCartButton = document.getElementById('AddToCart');
-  var addToCartText = document.querySelector('.AddToCartText');
+  var addToCartText = document.querySelector('.AddToCartText, .addtocarttext');
   
   if (addToCartButton && addToCartText) {
     if (variant.available) {
       addToCartButton.disabled = false;
-      addToCartText.innerHTML = '{{ "products.product.add_to_cart" | t }}';
+      addToCartText.innerHTML = 'Adicionar ao carrinho';
     } else {
       addToCartButton.disabled = true;
-      addToCartText.innerHTML = '{{ "products.product.sold_out" | t }}';
+      addToCartText.innerHTML = 'Esgotado';
     }
   }
 }
 
+// Função para encontrar variante baseada nas opções selecionadas
+function findVariantByOptions(productData, selectedOptions) {
+  for (var i = 0; i < productData.variants.length; i++) {
+    var variant = productData.variants[i];
+    var match = true;
+    
+    for (var j = 0; j < selectedOptions.length; j++) {
+      if (variant.options[j] !== selectedOptions[j]) {
+        match = false;
+        break;
+      }
+    }
+    
+    if (match) {
+      return variant;
+    }
+  }
+  return null;
+}
+
 // Inicializar listeners para mudanças de variantes
 $(document).ready(function() {
-  // Listener para seletores de opção única
+  console.log('Inicializando listeners de variantes...');
+  
+  // Listener para swatch (botões de rádio)
+  $(document).on('change', '.swatch input[type="radio"]', function() {
+    console.log('Swatch mudou:', $(this).val());
+    
+    var form = $(this).closest('form');
+    var sectionId = form.data('section');
+    
+    // Obter JSON do produto da seção
+    var productJsonElement = document.getElementById('ProductJson-' + sectionId);
+    if (productJsonElement) {
+      var productData = JSON.parse(productJsonElement.innerHTML);
+      
+      // Coletar todas as opções selecionadas
+      var selectedOptions = [];
+      $('.swatch input[type="radio"]:checked').each(function() {
+        selectedOptions.push($(this).val());
+      });
+      
+      console.log('Opções selecionadas:', selectedOptions);
+      
+      // Encontrar variante correspondente
+      var selectedVariant = findVariantByOptions(productData, selectedOptions);
+      
+      if (selectedVariant) {
+        console.log('Variante encontrada:', selectedVariant);
+        
+        // Atualizar select principal
+        var productSelect = form.find('[name="id"]');
+        if (productSelect.length) {
+          productSelect.val(selectedVariant.id);
+        }
+        
+        // Atualizar preços
+        updateVariantPrice(selectedVariant, sectionId);
+      }
+    }
+  });
+  
+  // Listener para seletores de opção única (fallback)
   $('.single-option-selector').on('change', function() {
+    console.log('Single option selector mudou:', $(this).val());
+    
     var form = $(this).closest('form');
     var productSelect = form.find('[name="id"]');
     var sectionId = form.data('section');
@@ -3175,26 +3258,14 @@ $(document).ready(function() {
         selectedOptions.push($(this).val());
       });
       
+      console.log('Opções selecionadas (select):', selectedOptions);
+      
       // Encontrar variante correspondente
-      var selectedVariant = null;
-      for (var i = 0; i < productData.variants.length; i++) {
-        var variant = productData.variants[i];
-        var match = true;
-        
-        for (var j = 0; j < selectedOptions.length; j++) {
-          if (variant.options[j] !== selectedOptions[j]) {
-            match = false;
-            break;
-          }
-        }
-        
-        if (match) {
-          selectedVariant = variant;
-          break;
-        }
-      }
+      var selectedVariant = findVariantByOptions(productData, selectedOptions);
       
       if (selectedVariant) {
+        console.log('Variante encontrada (select):', selectedVariant);
+        
         // Atualizar select principal
         productSelect.val(selectedVariant.id);
         
@@ -3208,6 +3279,8 @@ $(document).ready(function() {
   $('[name="id"]').on('change', function() {
     var variantId = $(this).val();
     var sectionId = $(this).closest('form').data('section');
+    
+    console.log('Select principal mudou:', variantId);
     
     // Obter JSON do produto da seção
     var productJsonElement = document.getElementById('ProductJson-' + sectionId);
@@ -3223,8 +3296,18 @@ $(document).ready(function() {
       }
       
       if (selectedVariant) {
+        console.log('Variante encontrada (select principal):', selectedVariant);
         updateVariantPrice(selectedVariant, sectionId);
       }
     }
   });
+  
+  // Debug: mostrar elementos encontrados
+  setTimeout(function() {
+    console.log('Elementos encontrados:');
+    console.log('- Swatches:', $('.swatch').length);
+    console.log('- Single selectors:', $('.single-option-selector').length);
+    console.log('- Product selects:', $('[name="id"]').length);
+    console.log('- Product JSON:', $('[id^="ProductJson-"]').length);
+  }, 1000);
 });
