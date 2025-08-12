@@ -45,7 +45,7 @@
  
 
   {{ 'theme.scss.css' | asset_url | stylesheet_tag }}
-  {{ 'typo-color.scss.css' | asset_url | stylesheet_tag }}
+  {{ 'theme-consolidated.scss.css' | asset_url | stylesheet_tag }}
     {% include 'google-fonts' %}
   <script>
     var theme = {
@@ -85,9 +85,9 @@
   <!--  bootstrap js & css  -->
   <script src="{{ 'bootstrap.min.js' | asset_url }}"></script>
   <script>var mainShopDomain='{{shop.permanent_domain}}';</script>
-  {{ 'shop.js' | asset_url | script_tag }}
+  {{ 'theme-optimized.js' | asset_url | script_tag }}
  
-  {{ 'fontawesome.css' | asset_url | stylesheet_tag }}
+  {{ 'fontawesome-optimized.css' | asset_url | stylesheet_tag }}
   
   {{ content_for_header }}
   <link href="https://fonts.googleapis.com/css?family=Anton|Arimo|Arvo|Baloo+Bhai|Baloo+Bhaina|Bitter|Bree+Serif|Cabin|Catamaran|David+Libre|Dosis|Droid+Sans|Droid+Serif|Ek+Mukta|Fjalla+One|Hind|Inconsolata|Indie+Flower|Lato|Libre+Baskerville|Lobster|Lora|Merriweather|Modak|Montserrat|Muli|Noto+Sans|Noto+Serif|Nunito|Open+Sans|Open+Sans+Condensed:300|Oswald|Oxygen|PT+Sans|PT+Sans+Narrow|PT+Serif|Pavanam|Playfair+Display|Poppins|Raleway|Roboto|Roboto+Condensed|Roboto+Slab|Slabo+27px|Source+Sans+Pro|Teko|Titillium+Web|Ubuntu|Yanone+Kaffeesatz|Yatra+One" rel="stylesheet">
