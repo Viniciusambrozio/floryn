@@ -215,7 +215,7 @@
       var popupShown = getCookie("discount_popup_email");
       var popupOneTime = getCookie("popup_one_time");
       
-      if(popupShown != 'no' && popupOneTime == null){
+      if((popupShown == "" || popupShown == null) && (popupOneTime == "" || popupOneTime == null)){
         setTimeout(function(){
           $('#OfferCartpopup').modal('show'); 
           setCookie("discount_popup_email",'yes',expiretime);
