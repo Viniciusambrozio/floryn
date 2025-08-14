@@ -1,0 +1,114 @@
+{% comment %}
+	GEMPAGE BUILDER (https://apps.shopify.com/gempage)
+
+	You SHOULD NOT modify source code in this page because
+	It is automatically generated from GEMPAGE BUILDER
+	Try to edit page with the live editor.
+{% endcomment %}
+<!doctype html>
+<!--[if IE 9]> <html class="ie9 no-js" lang="{{ shop.locale }}"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js" lang="{{ shop.locale }}"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="{{ settings.color_button }}">
+  <meta name="version" content="2.2.1">
+  <meta name="email" content="{{ shop.email }}">
+  <meta name="role" content="{{ theme.role }}">
+  
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {% if settings.favicon != blank %}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+  {% endif %}
+
+  {% capture seo_title %}
+    {{ page_title }}
+    {% if current_tags %}
+      {%- assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags -}}
+    {% endif %}
+    {% if current_page != 1 %}
+      &ndash; {{ 'general.meta.page' | t: page: current_page }}
+    {% endif %}
+    {% unless page_title contains shop.name %}
+      &ndash; {{ shop.name }}
+    {% endunless %}
+  {% endcapture %}
+  <title>{{ seo_title }}</title>
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape }}">
+  {% endif %}
+
+  {% include 'social-meta-tags' %}
+ 
+
+  {{ 'theme.scss.css' | asset_url | stylesheet_tag }}
+  {{ 'theme-consolidated.scss.css' | asset_url | stylesheet_tag }}
+    {% include 'google-fonts' %}
+  <script>
+    var theme = {
+      strings: {
+        addToCart: {{ 'products.product.add_to_cart' | t | json }},
+        soldOut: {{ 'products.product.sold_out' | t | json }},
+        unavailable: {{ 'products.product.unavailable' | t | json }},
+        showMore: {{ 'general.filters.show_more' | t | json }},
+        showLess: {{ 'general.filters.show_less' | t | json }},
+        addressError: {{ 'sections.map.address_error' | t | json }},
+        addressNoResults: {{ 'sections.map.address_no_results' | t | json }},
+        addressQueryLimit: {{ 'sections.map.address_query_limit_html' | t | json }},
+        authError: {{ 'sections.map.auth_error_html' | t | json }}
+      },
+      moneyFormat: {{ shop.money_format | json }}
+    }
+
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  </script>
+    <!--[if (lte IE 9) ]>{{ 'match-media.min.js' | asset_url | script_tag }}<![endif]-->
+
+  {% if template.directory == 'customers' %}
+    <!--[if (gt IE 9)|!(IE)]><!--><script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script><!--<![endif]-->
+    <!--[if lte IE 9]><script src="{{ 'shopify_common.js' | shopify_asset_url }}"></script><![endif]-->
+  {% endif %}
+  <script type="text/javascript">
+   var sv = {{ 'products.product.on_save_like_price' | t | json }};var x = {{ 'products.product.on_save' | t | json  }}; var y = {{ 'general.newsletter_form.confirmation' | t | json }};{% if settings.show_multiple_currencies %}var currency_dropdown = true;{% if settings.select_dropdown == 'auto_currency' %}var auto_curncy = true;{% else %}var auto_curncy = false;{% endif %}{% else %}var currency_dropdown = false;{% endif %}{% if settings.show_saved_amount %}{% if settings.show_discount_amount == 'percent_save' %}var precentprice = true;{% else %}var precentprice = false;{% endif %}{% endif %}
+   var addToCartBtnLabel_1 = {{ 'products.product.add_to_cart' | t | json }},addedToCartBtnLabe_1 = {{ "products.product.Thanks_you" | t | json }},addingToCartBtnLabel_1 = {{ "products.product.adding" | t | json }},soldOutBtnLabel_1 = {{ "products.product.sold_out" | t | json }};{% if template == 'product' or template == 'index'%}var relatedupsellmodal = true;{% else %}var relatedupsellmodal = false;{% endif %}var added_to_cart = {{ 'cart.general.added_to_cart' | t | json }};var view_cart = {{ "cart.general.view_cart" | t | json }};var continue_shopping = {{ "cart.general.continue_shopping" | t | json }};var items_count_one = {{ 'layout.cart.items_count.one' | t | json }};var items_count_other = {{ 'layout.cart.items_count.other' | t | json }};var read_more = {{ "products.timer.readmore" | t | json}};var read_less = {{ "products.timer.readless" | t | json}};var eblstcky = false;var ebl_pay_but = false;var read_mor = false;var visitorcountr = false;var livestock = false;var enable_defaul_variant = true;
+  </script>
+  <!--[if (gt IE 9)|!(IE)]><!--><script src="{{ 'lazysizes.js' | asset_url }}" async="async"></script><!--<![endif]-->
+  <!--[if lte IE 9]><script src="{{ 'lazysizes.min.js' | asset_url }}"></script><![endif]-->
+
+  <!--[if lte IE 9]><!--><script src="{{ 'theme.js' | asset_url }}"></script><!--><![endif]-->
+
+
+
+  <!--  bootstrap js & css  -->
+  <script src="{{ 'bootstrap.min.js' | asset_url }}"></script>
+  <script>var mainShopDomain='{{shop.permanent_domain}}';</script>
+  {{ 'theme-optimized.js' | asset_url | script_tag }}
+ 
+  {{ 'fontawesome-optimized.css' | asset_url | stylesheet_tag }}
+  
+  {{ content_for_header }}
+  <link href="https://fonts.googleapis.com/css?family=Anton|Arimo|Arvo|Baloo+Bhai|Baloo+Bhaina|Bitter|Bree+Serif|Cabin|Catamaran|David+Libre|Dosis|Droid+Sans|Droid+Serif|Ek+Mukta|Fjalla+One|Hind|Inconsolata|Indie+Flower|Lato|Libre+Baskerville|Lobster|Lora|Merriweather|Modak|Montserrat|Muli|Noto+Sans|Noto+Serif|Nunito|Open+Sans|Open+Sans+Condensed:300|Oswald|Oxygen|PT+Sans|PT+Sans+Narrow|PT+Serif|Pavanam|Playfair+Display|Poppins|Raleway|Roboto|Roboto+Condensed|Roboto+Slab|Slabo+27px|Source+Sans+Pro|Teko|Titillium+Web|Ubuntu|Yanone+Kaffeesatz|Yatra+One" rel="stylesheet">
+
+  <style type="text/css"> .product-description + [data-readmore-toggle], .product-description[data-readmore]{display: block; width: 100%;margin-top: 15px;}.product-description[data-readmore]{transition: height 100ms;overflow-x: hidden !important;overflow: -webkit-paged-x;}</style>
+
+
+
+	{{ shop.metafields.loox["global_html_head"] }}
+<!--Gem_Page_Header_Script-->
+{% include 'gem-app-header-scripts' %}
+<!--End_Gem_Page_Header_Script-->
+</head>
+
+<body>
+<div class="gem-container">
+	{{ content_for_layout }}
+</div><!-- end .gem-container -->
+<!--Gem_Page_Footer_Script-->
+{% include 'gem-app-footer-scripts' %}
+<!--End_Gem_Page_Footer_Script-->
+</body>
+</html>
+
