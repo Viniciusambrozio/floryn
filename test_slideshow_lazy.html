@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Lazy Loading Slideshow</title>
+    <style>
+        .slideshow__image {
+            width: 100%;
+            height: 400px;
+            display: block;
+        }
+        .slideshow__image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .lazyload {
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .lazyloaded {
+            opacity: 1;
+        }
+        .slide {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teste de Lazy Loading no Slideshow</h1>
+    
+    <!-- Simulação do primeiro slide (carrega imediatamente) -->
+    <div class="slide">
+        <h3>Slide 1 (Carrega imediatamente)</h3>
+        <div class="slideshow__image">
+            <img class="lazyload" 
+                 data-src="https://via.placeholder.com/1920x400/FF6B6B/FFFFFF?text=Slide+1+Full+Resolution"
+                 src="https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=Slide+1+Preview"
+                 alt="Slide 1">
+        </div>
+    </div>
+    
+    <!-- Simulação do segundo slide (lazy load) -->
+    <div class="slide">
+        <h3>Slide 2 (Lazy Load)</h3>
+        <div class="slideshow__image">
+            <img class="lazyload lazypreload" 
+                 data-src="https://via.placeholder.com/1920x400/4ECDC4/FFFFFF?text=Slide+2+Full+Resolution"
+                 src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                 alt="Slide 2">
+        </div>
+    </div>
+    
+    <!-- Simulação do terceiro slide (lazy load) -->
+    <div class="slide">
+        <h3>Slide 3 (Lazy Load)</h3>
+        <div class="slideshow__image">
+            <img class="lazyload lazypreload" 
+                 data-src="https://via.placeholder.com/1920x400/45B7D1/FFFFFF?text=Slide+3+Full+Resolution"
+                 src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                 alt="Slide 3">
+        </div>
+    </div>
+    
+    <div style="height: 1000px; background: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+        <p>Role para baixo para testar o lazy loading...</p>
+    </div>
+    
+    <!-- Mais slides para testar o lazy loading -->
+    <div class="slide">
+        <h3>Slide 4 (Lazy Load - Aparece ao rolar)</h3>
+        <div class="slideshow__image">
+            <img class="lazyload lazypreload" 
+                 data-src="https://via.placeholder.com/1920x400/96CEB4/FFFFFF?text=Slide+4+Full+Resolution"
+                 src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+                 alt="Slide 4">
+        </div>
+    </div>
+    
+    <script src="assets/lazysizes.js"></script>
+    <script>
+        // Log para verificar quando as imagens são carregadas
+        document.addEventListener('lazyloaded', function(e) {
+            console.log('Imagem carregada:', e.target.alt, e.target.src);
+        });
+        
+        document.addEventListener('lazybeforeunveil', function(e) {
+            console.log('Preparando para carregar:', e.target.alt);
+        });
+    </script>
+</body>
+</html>

@@ -110,7 +110,10 @@
             {% else %}
                 {% if section.settings.slideshow_height == "full" %}
                 <div class="slideshow__image">
-                 <img src="{{ block.settings.image | img_url: '1920x' }}">
+                 <img class="lazyload{% unless forloop.first == true %} lazypreload{% endunless %}" 
+                      data-src="{{ block.settings.image | img_url: '1920x' }}"
+                      {% if forloop.first == true %}src="{{ block.settings.image | img_url: '300x300' }}"{% else %}src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="{% endif %}
+                      alt="{{ block.settings.title | escape }}">
                 </div>
                   {% else %}
               <div class="slideshow__image box ratio-container lazyload{% unless forloop.first == true %} lazypreload{% endunless %} js"
