@@ -140,7 +140,11 @@
     var expiretime ={{ settings.expire_time }};
     var  item_count = "{{ cart.item_count}}";
 
-    remainderTime2= remainderTimeset2*60*1000; 
+    {% if settings.discount_popup_time == 'exit_popup' %}
+    remainderTime2= remainderTimeset2*60*1000;
+    {% else %}
+    remainderTime2= parseFloat(remainderTimeset2)*1000; // Converter diretamente para milissegundos
+    {% endif %} 
 
     function setCookie(name,value,days) {
       if (days) { 
@@ -207,15 +211,16 @@
 
     if(item_count==0)
     {
-      if(date2_2>date1_2){
-
+      // Verificar se o popup já foi exibido para este usuário
+      var popupShown = getCookie("discount_popup_email");
+      var popupOneTime = getCookie("popup_one_time");
+      
+      if(popupShown != 'no' && popupOneTime == null){
         setTimeout(function(){
-          // location.reload(true);
           $('#OfferCartpopup').modal('show'); 
           setCookie("discount_popup_email",'yes',expiretime);
           $('#OfferCartpopup').css("padding-right","0px"); 
-        }, diffDays2*1000);
-
+        }, remainderTime2);
       }
     }
 
@@ -235,8 +240,17 @@
     $('#OfferCartpopup input[type="submit"]').on("click", function(){
       $('#OfferCartpopup').find(".close").trigger("click");
       setCookie("discount_popup_email",'no',expiretime);
+      setCookie("popup_one_time",'1',expiretime);
     });
     {% endif %}
+    
+    // Adicionar evento para quando o popup for fechado
+    $('#OfferCartpopup .close, #OfferCartpopup').on('click', function(e){
+      if(e.target === this || $(e.target).hasClass('close')){
+        setCookie("popup_one_time",'1',expiretime);
+        setCookie("discount_popup_email",'no',expiretime);
+      }
+    });
     {% if settings.discount_popup_time == 'exit_popup' %}
     var z = 0;
     if (z == 0){

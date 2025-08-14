@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "current": {
     "product_key": "",
@@ -123,7 +114,7 @@
     "discount_popup_disable_mobile": false,
     "discount_image_desktop": true,
     "discount_image_enable": true,
-    "discount_popup_time": "exit_popup",
+    "discount_popup_time": "0.5",
     "expire_time": 1,
     "discount_icon": "",
     "discount_popup_title": "5% OFF",
