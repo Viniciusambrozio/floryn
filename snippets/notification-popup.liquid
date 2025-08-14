@@ -1,7 +1,10 @@
 {% if settings.popup_enable %}
 <script>
   $(function() {
-
+    // Inicializar controle de rotação de produtos
+    var currentProductIndex = 0;
+    var totalProducts = $('#someone-purchased > div').length;
+    
     $('#someone-purchased').show();
     var mytimeAgo = ['0', '1', '5', '10', '12', '14', '16', '18', '20', '25', '30', '35', '40','42','45', '50', '60'];  
     var randomlytimeAgo = Math.floor(Math.random() * mytimeAgo.length);
@@ -11,18 +14,23 @@
     $("#someone-purchased > div:gt(0)").hide();
 
     setInterval(function() {
-      $('#someone-purchased > div:first')
-      .fadeOut(0)
-      .next()
-      .fadeIn(0)
-      .end()
-      .appendTo('#someone-purchased');
+      // Ocultar produto atual
+      $('#someone-purchased > div').eq(currentProductIndex).fadeOut(300);
+      
+      // Avançar para próximo produto (rotação sequencial)
+      currentProductIndex = (currentProductIndex + 1) % totalProducts;
+      
+      // Mostrar próximo produto
+      setTimeout(function() {
+        $('#someone-purchased > div').eq(currentProductIndex).fadeIn(300);
+      }, 300);
 
+      // Atualizar tempo aleatório
       var mytimeAgo = ['0', '1', '5', '10', '12', '14', '16', '18', '20', '25', '30', '35', '40','42','45', '50', '60'];  
       var randomlytimeAgo = Math.floor(Math.random() * mytimeAgo.length);
       var currentmytimeAgo = mytimeAgo[randomlytimeAgo];
       $(".timeAgo").text(currentmytimeAgo+" {{ 'cart.general.minutes_ago' | t}}"); 
-       },  20000);
+    }, 20000);
 
 
 
@@ -81,8 +89,14 @@
 <div id="someone-purchased" class="customized fade-in" style="display:none;">
 
 
-  {% capture index %}{{ 'now' | date: '%S' | times: randomly_collection.products.size | divided_by: 60 }}{% endcapture %}
-  {% for product in randomly_collection.products offset:index limit:1000 %}
+  {% comment %} Gerar lista de produtos embaralhada para evitar repetições {% endcomment %}
+  {% assign current_time = 'now' | date: '%s' %}
+  {% assign shuffle_seed = current_time | modulo: 1000 %}
+  {% assign shuffled_products = randomly_collection.products | sort: 'created_at' %}
+  {% if shuffle_seed > 500 %}
+    {% assign shuffled_products = shuffled_products | reverse %}
+  {% endif %}
+  {% for product in shuffled_products limit:20 %}
   <div>
     <a href="{{ product.url }}">
       {% if settings.enable_product_variant_image %}
