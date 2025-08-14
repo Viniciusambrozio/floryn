@@ -2,7 +2,7 @@
 
   {% if cart.item_count > 0 %}
   {% if section.settings.cart_enable %}
-  {{ 'jquery.countdownTimer_2hours.js' | asset_url | script_tag }}  
+  <!-- Script de countdown timer removido -->  
 
   {% endif %}
 
@@ -182,24 +182,19 @@
                 <span class="cart__savings-amount">{{ cart.total_discounts | money }}</span>
               </div>
             {% endif %}
-            <div class="cart__shipping">{{ 'cart.general.shipping_at_checkout' | t }}</div>
-            {% if section.settings.cart_enable %}
-            <script>
-              var time_minute={{ section.settings.cart_timer_minute }}/60 ;
-              var hours = Math.floor( time_minute / 60); 
-              var minutes = Math.floor(time_minute % 60);     
-              $(function(){
-                $('#hm_timer120').countdowntimer({
-                  hours : hours,
-                  minutes :minutes,
-                  seconds :00
-                });
-              });
-            </script>
-        <p class="timer_box"><span class="cart_text">{{ 'cart.general.cart_expire_text' | t }} </span>
-          <span id="hm_timer120" class="cart_time"></span></p>
-        
-        {% endif %}
+            <!-- Barra de progresso para frete grátis -->
+            <div class="cart__free-shipping-progress">
+              <div class="free-shipping-container">
+                <div class="free-shipping-text">
+                  <span id="free-shipping-message">Faltam <span id="remaining-amount">R$ 0,00</span> para ganhar frete grátis!</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="free-shipping-threshold">R$ 300,00</div>
+              </div>
+            </div>
+            <!-- Timer de expiração removido -->
           </div>
           
         </div>
@@ -214,9 +209,7 @@
             <span>{{ 'cart.general.checkout' | t }}</span>
           </button>
             
-            {% if additional_checkout_buttons %}
-            <div class="additional-checkout-buttons">{{ content_for_additional_checkout_buttons }}</div>
-            {% endif %}
+            <!-- PayPal e outros botões de checkout removidos -->
           </div>
         </div>
         <div class="grid">
@@ -361,4 +354,107 @@
       }
     ]
   }
+<style>
+  .cart__free-shipping-progress {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+  }
+  
+  .free-shipping-container {
+    text-align: center;
+  }
+  
+  .free-shipping-text {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .free-shipping-text.achieved {
+    color: #28a745;
+    font-size: 16px;
+  }
+  
+  .progress-bar-container {
+    width: 100%;
+    height: 20px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+  
+  .free-shipping-threshold {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 5px;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    function updateFreeShippingProgress() {
+      const cartTotal = {{ cart.total_price | divided_by: 100.0 }};
+      const freeShippingThreshold = 300;
+      const remainingAmount = Math.max(0, freeShippingThreshold - cartTotal);
+      const progressPercentage = Math.min(100, (cartTotal / freeShippingThreshold) * 100);
+      
+      const messageElement = document.getElementById('free-shipping-message');
+      const remainingElement = document.getElementById('remaining-amount');
+      const progressBar = document.getElementById('progress-bar');
+      const textContainer = document.querySelector('.free-shipping-text');
+      
+      if (cartTotal >= freeShippingThreshold) {
+        messageElement.innerHTML = 'VOCÊ GANHOU FRETE GRÁTIS!';
+        textContainer.classList.add('achieved');
+        progressBar.style.width = '100%';
+      } else {
+        const formattedRemaining = new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        }).format(remainingAmount);
+        
+        messageElement.innerHTML = `Faltam <span id="remaining-amount">${formattedRemaining}</span> para ganhar frete grátis!`;
+        textContainer.classList.remove('achieved');
+        progressBar.style.width = progressPercentage + '%';
+      }
+    }
+    
+    // Atualizar na carga da página
+    updateFreeShippingProgress();
+    
+    // Atualizar quando o carrinho for modificado
+    document.addEventListener('cart:updated', updateFreeShippingProgress);
+    
+    // Observar mudanças no DOM para atualizações do carrinho
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.type === 'childList' || mutation.type === 'subtree') {
+          updateFreeShippingProgress();
+        }
+      });
+    });
+    
+    const cartElement = document.querySelector('.cart-template');
+    if (cartElement) {
+      observer.observe(cartElement, {
+        childList: true,
+        subtree: true
+      });
+    }
+  });
+</script>
+
 {% endschema %}
