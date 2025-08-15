@@ -440,14 +440,14 @@
             "type": "featured_collection",
             "settings": {
               "collection": "masculino",
-              "image": "shopify://shop_images/fundo_verde.png"
+              "image": "shopify://shop_images/FEMININO_1.png"
             }
           },
           "1522671586612-1": {
             "type": "featured_collection",
             "settings": {
               "collection": "feminino",
-              "image": "shopify://shop_images/fundo_verde.png"
+              "image": "shopify://shop_images/FEMININO.png"
             }
           }
         },
