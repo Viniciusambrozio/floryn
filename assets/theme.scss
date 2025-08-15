@@ -6405,8 +6405,8 @@ span.quote-icon img , .svgnoimg{
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: $color-image-overlay;
-  opacity: $opacity-image-overlay;
+  background-color: #a5ba93;
+  opacity: 0.25;
 }
 .collection-grid-item__link:hover .collection-grid-item__title-wrapper::before {
   background-color: $image-hover-color;

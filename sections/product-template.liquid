@@ -384,14 +384,10 @@
               {% endif %}
               
               {% if current_variant.compare_at_price > current_variant.price %}
-              <div class="price-lable {{tg }}">{{ 'products.product.sticky_timer_text' | t }} 
-                {% include 'sticky_timer_mobile'%}
-              </div>
+              {% comment %} Timer removido {% endcomment %}
               {% else %}
               {% unless settings.disable_timer_regular_price %}
-              <div class="price-lable {{tg }}">{{ 'products.product.sticky_timer_text' | t }} 
-                {% include 'sticky_timer_mobile'%}
-              </div>
+              {% comment %} Timer removido {% endcomment %}
               {% endunless %}
               {% endif %}
              

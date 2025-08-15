@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin language editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "general": {
     "accessibility": {
@@ -133,7 +124,6 @@
       "edit": "Editar",
       "cancel": "Cancelar",
       "continue_shopping": "Voltar à loja",
-      "cart_expire_text": "O carrinho expira em",
       "currency_info_text1": "",
       "currency_info_text2": "",
       "secure_shopping_image_title": "COMPRA 100% SEGURA",
@@ -359,18 +349,8 @@
       "tags": "Tag",
       "only_left_text_1": "SÓ",
       "only_left_text_2": "PEÇAS EM ESTOQUE",
-      "sale_end_text": "FALTA POUCO PARA A PROMOÇÃO ACABAR!",
       "deliiver_time_text_1": "Tempo de entrega estimado",
-      "deliiver_time_text_2": "dias",
-      "sticky_timer_text": "Promoção termina em:"
-    },
-    "timer": {
-      "day": "Dia",
-      "hour": "Horas",
-      "minute": "Minutos",
-      "second": "Segundos",
-      "readmore": "Consulte Mais informação",
-      "readless": "Menos"
+      "deliiver_time_text_2": "dias"
     },
     "product_tab": {
       "product_tab_1": "Detalhes do produto",

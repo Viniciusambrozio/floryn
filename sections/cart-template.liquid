@@ -274,24 +274,9 @@
       dataType: 'json'
     });
   });
-  var time_minute_1 ={{ section.settings.cart_timer_minute }}/60 ;
-  //   alert(time_minute);
-  var hours_1 = Math.floor( time_minute_1 / 60) * 60;
-  var minutes_1 = Math.floor(time_minute_1 % 60); 
-  var totalminute = minutes_1 + hours_1;
-  var milisecond = (totalminute * 60) * 1000;
-  $(window).load(function(){
-    setTimeout(function() {
-      $('.clear-cart').trigger('click');     
-    }, milisecond);
-
-  });			
+  // Timer do carrinho removido			
   </script>
-<style>
-  .timer_box span.cart_time {
-    color: {{ section.settings.cart_timer_color }} !important;
-  }
-  </style>
+<!-- Estilos do timer removidos -->
 {% endif %}
 {% endif %}
 {% schema %}
@@ -319,17 +304,7 @@
         "id": "cart_enable",
         "label": "Timer Enable"
       },
-      {
-        "type": "number",
-        "id": "cart_timer_minute",
-        "label": "Cart Timer Minute",
-        "info": "Example: 1500 second left = 25 minutes left"
-      },
-      {
-        "type": "color",
-        "id": "cart_timer_color",
-        "label": "Cart Timer Color"
-      },
+      // Configurações do timer removidas
       {
         "type": "header",
         "content": "cart page images setting"
