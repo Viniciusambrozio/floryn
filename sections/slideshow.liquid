@@ -36,39 +36,22 @@
     {% endif %}
   }
   {% if section.settings.heading_divider == 'medium' %}  
-   #shopify-section-{{section.id}} .slideshow-wrapper .mega-title {
-    border-bottom: 3px solid {{settings.color_image_overlay_text}};
+  #shopify-section-{{section.id}} .slideshow-wrapper .border_width {
+    width:{{ section.settings.title | size | times: 9 | plus: 60 }}px;
+    border-top:3px solid {{settings.color_image_overlay_text}};
     display: inline-block;
-    padding-bottom: 14px;
-    margin-bottom: 5px;
-}
-   #shopify-section-{{section.id}} .slideshow-wrapper .border_width {border:none;}
-  
+    margin-top: 14px;
+    margin-bottom: 0px;
+  }
   {% endif %}
   {% endunless %}
-
-   /*===== END BORDER STYLE CSS =====*/
-  
-
-  
-  </style>
+  /*===== END BORDER STYLE CSS =====*/
+</style>
 
 <div data-section-id="{{ section.id }}" data-section-type="slideshow-section">
-
   {% if section.blocks.size > 0 %}
-    <div class="slideshow-wrapper">
-      <button type="button" class="visually-hidden slideshow__pause" data-id="{{ section.id }}" aria-live="polite">
-        <span class="slideshow__pause-stop">
-          {% include 'icon-pause' %}
-          <span class="icon__fallback-text">{{ 'sections.slideshow.pause_slideshow' | t }}</span>
-        </span>
-        <span class="slideshow__pause-play">
-          {% include 'icon-play' %}
-          <span class="icon__fallback-text">{{ 'sections.slideshow.play_slideshow' | t }}</span>
-        </span>
-      </button>
-
-      <div {% if section.settings.slideshow_height != "full" %}class="slideshow slideshow--{{ section.settings.slideshow_height }}"{% endif %} id="Slideshow-{{ section.id }}" data-autoplay="{{ section.settings.autoplay }}" data-speed="{{ section.settings.autoplay_speed }}">
+    <div id="SlideshowWrapper-{{ section.id }}" class="slideshow-wrapper" role="region" aria-label="slideshow" tabindex="-1">
+      <div id="Slideshow-{{ section.id }}" class="slideshow slideshow--{{ section.settings.slideshow_height }}" data-autoplay="{{ section.settings.autoplay }}" data-speed="{{ section.settings.autoplay_speed }}" aria-live="polite">
         {% for block in section.blocks %}
           {%- assign is_background_video = false -%}
           {% if block.type == 'video' %}
@@ -95,12 +78,12 @@
               {% if block.settings.video_url != blank %}
                 <div id="SlideshowVideo-{{ block.id }}" class="slideshow__video {% if is_background_video %}slideshow__video--background{% endif %} slideshow__video--{{ block.settings.video_type }}"
                   data-id="{{ block.settings.video_url.id }}"
-                  data-type="{{ block.settings.video_type }}"
+                  data-type="{{ block.settings.video_url.type }}"
                   data-slideshow="Slideshow-{{ section.id }}"></div>
               {% endif %}
             {% endif %}
 
-            {% if block.settings.image == blank %}
+            {% if block.settings.image == blank and block.settings.image_mobile == blank %}
               <div class="slideshow__image js">
                 <div class="placeholder-background">
                   {% capture current %}{% cycle 1, 2 %}{% endcapture %}
@@ -110,30 +93,82 @@
             {% else %}
                 {% if section.settings.slideshow_height == "full" %}
                 <div class="slideshow__image">
-                 <img class="lazyload{% unless forloop.first == true %} lazypreload{% endunless %}" 
-                      data-src="{{ block.settings.image | img_url: '1500x2200' }}"
-                      {% if forloop.first == true %}src="{{ block.settings.image | img_url: '300x300' }}"{% else %}src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="{% endif %}
-                      alt="{{ block.settings.title | escape }}">
+                  <!-- Desktop Image -->
+                  {% if block.settings.image %}
+                  <img class="lazyload{% unless forloop.first == true %} lazypreload{% endunless %} medium-up--show small--hide" 
+                       data-src="{{ block.settings.image | img_url: '1500x2200' }}"
+                       {% if forloop.first == true %}src="{{ block.settings.image | img_url: '300x300' }}"{% else %}src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="{% endif %}
+                       alt="{{ block.settings.title | escape }}">
+                  {% endif %}
+                  
+                  <!-- Mobile Image -->
+                  {% if block.settings.image_mobile %}
+                  <img class="lazyload{% unless forloop.first == true %} lazypreload{% endunless %} medium-up--hide small--show" 
+                       data-src="{{ block.settings.image_mobile | img_url: '800x600' }}"
+                       {% if forloop.first == true %}src="{{ block.settings.image_mobile | img_url: '300x300' }}"{% else %}src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="{% endif %}
+                       alt="{{ block.settings.title | escape }}">
+                  {% elsif block.settings.image %}
+                  <!-- Fallback to desktop image if no mobile image -->
+                  <img class="lazyload{% unless forloop.first == true %} lazypreload{% endunless %} medium-up--hide small--show" 
+                       data-src="{{ block.settings.image | img_url: '800x600' }}"
+                       {% if forloop.first == true %}src="{{ block.settings.image | img_url: '300x300' }}"{% else %}src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="{% endif %}
+                       alt="{{ block.settings.title | escape }}">
+                  {% endif %}
                 </div>
                   {% else %}
-              <div class="slideshow__image box ratio-container lazyload{% unless forloop.first == true %} lazypreload{% endunless %} js"
+              <!-- Desktop Background Image -->
+              {% if block.settings.image %}
+              <div class="slideshow__image box ratio-container lazyload{% unless forloop.first == true %} lazypreload{% endunless %} js medium-up--show small--hide"
                    data-bgset="{% include 'bgset', image: block.settings.image %}"
                    data-sizes="auto"
                    data-parent-fit="cover"
-                   style="background-position: {{ block.settings.alignment }};{% if forloop.first == true %} background-image: url('{{ block.settings.image | img_url: '300x300' }});{% endif %}">
+                   style="background-position: {{ block.settings.alignment }};{% if forloop.first == true %} background-image: url('{{ block.settings.image | img_url: '300x300' }}');{% endif %}">
               </div>
+              {% endif %}
+              
+              <!-- Mobile Background Image -->
+              {% if block.settings.image_mobile %}
+              <div class="slideshow__image box ratio-container lazyload{% unless forloop.first == true %} lazypreload{% endunless %} js medium-up--hide small--show"
+                   data-bgset="{% include 'bgset', image: block.settings.image_mobile %}"
+                   data-sizes="auto"
+                   data-parent-fit="cover"
+                   style="background-position: {{ block.settings.alignment }};{% if forloop.first == true %} background-image: url('{{ block.settings.image_mobile | img_url: '300x300' }}');{% endif %}">
+              </div>
+              {% elsif block.settings.image %}
+              <!-- Fallback to desktop image if no mobile image -->
+              <div class="slideshow__image box ratio-container lazyload{% unless forloop.first == true %} lazypreload{% endunless %} js medium-up--hide small--show"
+                   data-bgset="{% include 'bgset', image: block.settings.image %}"
+                   data-sizes="auto"
+                   data-parent-fit="cover"
+                   style="background-position: {{ block.settings.alignment }};{% if forloop.first == true %} background-image: url('{{ block.settings.image | img_url: '300x300' }}');{% endif %}">
+              </div>
+              {% endif %}
                 {% endif %}
             {% endif %}
 
             <noscript>
-              <div class="slideshow__image"{% if block.settings.image %} style="background-image: url('{{ block.settings.image | img_url: '1500x2200' }}'); background-position: {{ block.settings.alignment }};"{% endif %}>
-                {% if block.settings.image == blank %}
-                  <div class="placeholder-background">
-                    {% capture current %}{% cycle 1, 2 %}{% endcapture %}
-                    {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
-                  </div>
-                {% endif %}
+              <!-- Desktop Noscript -->
+              {% if block.settings.image %}
+              <div class="slideshow__image medium-up--show small--hide"{% if block.settings.image %} style="background-image: url('{{ block.settings.image | img_url: '1500x2200' }}'); background-position: {{ block.settings.alignment }};"{% endif %}>
               </div>
+              {% endif %}
+              
+              <!-- Mobile Noscript -->
+              {% if block.settings.image_mobile %}
+              <div class="slideshow__image medium-up--hide small--show"{% if block.settings.image_mobile %} style="background-image: url('{{ block.settings.image_mobile | img_url: '800x600' }}'); background-position: {{ block.settings.alignment }};"{% endif %}>
+              </div>
+              {% elsif block.settings.image %}
+              <!-- Fallback to desktop image if no mobile image -->
+              <div class="slideshow__image medium-up--hide small--show"{% if block.settings.image %} style="background-image: url('{{ block.settings.image | img_url: '800x600' }}'); background-position: {{ block.settings.alignment }};"{% endif %}>
+              </div>
+              {% endif %}
+              
+              {% if block.settings.image == blank and block.settings.image_mobile == blank %}
+                <div class="placeholder-background">
+                  {% capture current %}{% cycle 1, 2 %}{% endcapture %}
+                  {{ 'lifestyle-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {% endif %}
             </noscript>
             <div class="slideshow__text-wrap{% if block.settings.title != blank or block.settings.subheading != blank %} slideshow__overlay{% endif %}">
               <div class="slideshow__text-content">
@@ -142,28 +177,16 @@
                     <h2 class="h1 mega-title slideshow__title imgsldover{% if settings.link != blank %} slideshow__title--has-link{% endif %}">
                       {{ block.settings.title | escape }}
                     </h2>
-                   <div class="border_width"></div>
+                    <div class="border_width"></div>
                   {% endunless %}
                   {% unless block.settings.subheading == blank %}
-                    <span class="mega-subtitle slideshow__subtitle imgsldover_sub">
-                      {{ block.settings.subheading | escape }}
-                    </span>
+                    <span class="mega-subtitle slideshow__subtitle imgsldover_sub">{{ block.settings.subheading | escape }}</span>
                   {% endunless %}
-                  {% if block.settings.button_label != blank and block.settings.link != blank %}
-                  <p class="btn hero__btn">
-                    {{ block.settings.button_label | escape }}
-                  </p>
-                  {% endif %}
-                  {% if block.type == 'video' %}
-                    {% unless block.settings.video_type == 'background' %}
-                      <div class="slideshow__video-control--play-wrapper{% if block.settings.title != blank or block.settings.subheading != blank %} slideshow__video-control--play-wrapper--push{% endif %}">
-                        <button type="button" class="text-link slideshow__video-control slideshow__video-control--play" data-controls="SlideshowVideo-{{ block.id }}">
-                          {% include 'icon-play-video' %}
-                          <span class="icon__fallback-text">{{ 'sections.slideshow.play_video' | t }}</span>
-                        </button>
-                      </div>
-                    {% endunless %}
-                  {% endif %}
+                  {% unless block.settings.button_label == blank %}
+                    <a href="{{ block.settings.link }}" class="btn slideshow__btn">
+                      {{ block.settings.button_label | escape }}
+                    </a>
+                  {% endunless %}
                 </div>
               </div>
             </div>
@@ -171,9 +194,42 @@
             {% if block.settings.link != blank %}
               </a>
             {% endif %}
+
+            {% if block.type == 'video' %}
+              {% unless block.settings.video_type == 'background' %}
+                <button type="button" class="btn btn--tertiary slideshow__video-control slideshow__video-control--play" data-controls="SlideshowVideo-{{ block.id }}">
+                  {% include 'icon-play' %}
+                  <span class="slideshow__video-control-text">{{ 'sections.slideshow.play_video' | t }}</span>
+                </button>
+              {% endunless %}
+            {% endif %}
           </div>
         {% endfor %}
       </div>
+
+      {% if section.blocks.size > 1 %}
+        <div class="slideshow__controls">
+          <button type="button" class="slideshow__arrow slideshow__arrow--prev" aria-label="{{ 'sections.slideshow.previous_slide' | t }}">
+            {% include 'icon-chevron-left' %}
+          </button>
+          <button type="button" class="slideshow__arrow slideshow__arrow--next" aria-label="{{ 'sections.slideshow.next_slide' | t }}">
+            {% include 'icon-chevron-right' %}
+          </button>
+        </div>
+      {% endif %}
+
+      {% if section.settings.autoplay and section.blocks.size > 1 %}
+        <button type="button" class="slideshow__pause" data-id="{{ section.id }}" aria-live="polite">
+          <span class="slideshow__pause-stop">
+            {% include 'icon-pause' %}
+            <span class="icon__fallback-text">{{ 'sections.slideshow.pause_slideshow' | t }}</span>
+          </span>
+          <span class="slideshow__pause-play">
+            {% include 'icon-play' %}
+            <span class="icon__fallback-text">{{ 'sections.slideshow.play_slideshow' | t }}</span>
+          </span>
+        </button>
+      {% endif %}
     </div>
   {% endif %}
 
@@ -270,7 +326,13 @@
           {
             "type": "image_picker",
             "id": "image",
-            "label": "Image"
+            "label": "Desktop Image"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_mobile",
+            "label": "Mobile Image",
+            "info": "Optional: Upload a different image optimized for mobile devices. If not provided, the desktop image will be used."
           },
           {
             "type": "select",
@@ -349,8 +411,7 @@
           {
             "type": "image_picker",
             "id": "image",
-            "label": "Image",
-            "info": "Fallback when autoplaying video is not supported on mobile devices"
+            "label": "Image"
           },
           {
             "type": "text",
