@@ -540,6 +540,7 @@
             "type": "image",
             "settings": {
               "image": "shopify://shop_images/floryn-banner-desktop-1.jpg",
+              "image_mobile": "shopify://shop_images/floryn-banner-mobile-1.jpg",
               "alignment": "top",
               "title": "",
               "subheading": "",
@@ -551,6 +552,7 @@
             "type": "image",
             "settings": {
               "image": "shopify://shop_images/floryn-banner-desktop-2.jpg",
+              "image_mobile": "shopify://shop_images/floryn-banner-mobile-2.jpg",
               "alignment": "top",
               "title": "",
               "subheading": "",
@@ -562,6 +564,7 @@
             "type": "image",
             "settings": {
               "image": "shopify://shop_images/floryn-banner-desktop-3.jpg",
+              "image_mobile": "shopify://shop_images/floryn-banner-mobile-3.jpg",
               "alignment": "center",
               "title": "",
               "subheading": "",
