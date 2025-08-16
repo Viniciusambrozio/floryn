@@ -134,7 +134,21 @@
       "related_products": "produtos relacionados",
       "minutes_ago": "Minutos atrás",
       "was": "Estava",
-      "yousave": "Você economiza"
+      "yousave": "Você economiza",
+      "free_shipping_progress": {
+        "remaining_message": "Faltam {{ amount }} para ganhar frete grátis!",
+        "achieved_message": "VOCÊ GANHOU FRETE GRÁTIS!",
+        "threshold_label": "Meta: {{ threshold }}",
+        "progress_label": "Progresso do frete grátis"
+      },
+      "cart_actions": {
+        "updating": "Atualizando...",
+        "processing": "Processando...",
+        "item_updated": "Item atualizado com sucesso",
+        "item_removed": "Item removido do carrinho",
+        "clear_cart_confirm": "Tem certeza que deseja limpar o carrinho?",
+        "cart_cleared": "Carrinho limpo com sucesso"
+      }
     },
     "label": {
       "product": "Produto",

@@ -1,33 +1,66 @@
 // ================= CART CUSTOM JAVASCRIPT =================
 
+// Verificar compatibilidade do navegador e polyfills
+(function() {
+  'use strict';
+  
+  // Polyfill para CustomEvent (IE11)
+  if (typeof window.CustomEvent !== 'function') {
+    function CustomEvent(event, params) {
+      params = params || { bubbles: false, cancelable: false, detail: undefined };
+      var evt = document.createEvent('CustomEvent');
+      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+      return evt;
+    }
+    CustomEvent.prototype = window.Event.prototype;
+    window.CustomEvent = CustomEvent;
+  }
+  
+  // Polyfill para Element.closest (IE11)
+  if (!Element.prototype.closest) {
+    Element.prototype.closest = function(s) {
+      var el = this;
+      do {
+        if (Element.prototype.matches.call(el, s)) return el;
+        el = el.parentElement || el.parentNode;
+      } while (el !== null && el.nodeType === 1);
+      return null;
+    };
+  }
+  
+  // Polyfill para Element.matches (IE11)
+  if (!Element.prototype.matches) {
+    Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+  }
+})();
+
 document.addEventListener('DOMContentLoaded', function() {
   
-  // Função para atualizar a barra de progresso do frete grátis
+  // Função para atualizar a barra de progresso de frete grátis
   function updateFreeShippingProgress() {
-    const cartTotal = {{ cart.total_price | divided_by: 100.0 }};
-    const freeShippingThreshold = 300;
-    const remainingAmount = Math.max(0, freeShippingThreshold - cartTotal);
-    const progressPercentage = Math.min(100, (cartTotal / freeShippingThreshold) * 100);
+    const cartTotal = parseFloat(document.querySelector('.cart__subtotal .money')?.textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+    const freeShippingThreshold = 300.00; // R$ 300,00
+    const progressBar = document.querySelector('.progress-bar');
+    const freeShippingText = document.querySelector('.free-shipping-text');
     
-    const messageElement = document.getElementById('free-shipping-message');
-    const remainingElement = document.getElementById('remaining-amount');
-    const progressBar = document.getElementById('progress-bar');
-    const textContainer = document.querySelector('.free-shipping-text');
-    
-    if (messageElement && progressBar && textContainer) {
-      if (cartTotal >= freeShippingThreshold) {
-        messageElement.innerHTML = 'VOCÊ GANHOU FRETE GRÁTIS!';
-        textContainer.classList.add('achieved');
-        progressBar.style.width = '100%';
+    if (progressBar && freeShippingText) {
+      const remaining = Math.max(0, freeShippingThreshold - cartTotal);
+      const progress = Math.min(100, (cartTotal / freeShippingThreshold) * 100);
+      
+      progressBar.style.width = progress + '%';
+      progressBar.setAttribute('aria-valuenow', progress);
+      progressBar.setAttribute('aria-valuemin', '0');
+      progressBar.setAttribute('aria-valuemax', '100');
+      
+      if (remaining > 0) {
+        const remainingFormatted = `R$ ${remaining.toFixed(2).replace('.', ',')}`;
+        freeShippingText.textContent = `Faltam ${remainingFormatted} para ganhar frete grátis!`;
+        freeShippingText.classList.remove('achieved');
+        progressBar.setAttribute('aria-label', `Progresso do frete grátis: ${progress.toFixed(0)}% completo`);
       } else {
-        const formattedRemaining = new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL'
-        }).format(remainingAmount);
-        
-        messageElement.innerHTML = `Faltam <span id="remaining-amount">${formattedRemaining}</span> para ganhar frete grátis!`;
-        textContainer.classList.remove('achieved');
-        progressBar.style.width = progressPercentage + '%';
+        freeShippingText.textContent = 'VOCÊ GANHOU FRETE GRÁTIS!';
+        freeShippingText.classList.add('achieved');
+        progressBar.setAttribute('aria-label', 'Frete grátis conquistado!');
       }
     }
   }
@@ -82,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Melhorar acessibilidade dos botões
+  // Melhorar acessibilidade dos botões e adicionar feedback
   const buttons = document.querySelectorAll('.checkout_btn, .cart__update, .cart__remove, .cart__continue--large');
   buttons.forEach(button => {
     button.addEventListener('keydown', function(e) {
@@ -90,6 +123,70 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         this.click();
       }
+    });
+  });
+  
+  // Melhorar acessibilidade específica dos botões de carrinho
+  document.querySelectorAll('.cart__update, .cart__remove').forEach(button => {
+    // Adicionar atributos de acessibilidade
+    if (!button.getAttribute('aria-label')) {
+      const action = button.classList.contains('cart__remove') ? 'Remover item' : 'Atualizar quantidade';
+      button.setAttribute('aria-label', action);
+    }
+    
+    // Adicionar feedback visual ao clicar
+    button.addEventListener('click', function(e) {
+      const isRemove = this.classList.contains('cart__remove');
+      const isUpdate = this.classList.contains('cart__update');
+      
+      if (isRemove) {
+        this.setAttribute('aria-busy', 'true');
+        this.textContent = 'Removendo...';
+        setTimeout(() => {
+          showSuccessMessage('Item removido do carrinho', 'success');
+        }, 500);
+      } else if (isUpdate) {
+        this.setAttribute('aria-busy', 'true');
+        this.disabled = true;
+        this.textContent = 'Atualizando...';
+        setTimeout(() => {
+          this.setAttribute('aria-busy', 'false');
+          this.disabled = false;
+          this.textContent = 'Atualizar';
+          showSuccessMessage('Item atualizado com sucesso', 'success');
+        }, 1000);
+      }
+    });
+    
+    // Tooltip para melhor UX
+    button.addEventListener('mouseenter', function() {
+      const tooltip = document.createElement('div');
+      tooltip.className = 'button-tooltip';
+      tooltip.textContent = this.getAttribute('aria-label') || this.textContent;
+      tooltip.style.cssText = `
+        position: absolute;
+        background: #333;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        white-space: nowrap;
+        z-index: 1000;
+        pointer-events: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      `;
+      
+      document.body.appendChild(tooltip);
+      
+      const rect = this.getBoundingClientRect();
+      tooltip.style.left = rect.left + 'px';
+      tooltip.style.top = (rect.top - tooltip.offsetHeight - 8) + 'px';
+      
+      this.addEventListener('mouseleave', function() {
+        if (tooltip.parentNode) {
+          tooltip.parentNode.removeChild(tooltip);
+        }
+      }, { once: true });
     });
   });
   
@@ -102,22 +199,82 @@ document.addEventListener('DOMContentLoaded', function() {
   // Atualizar progresso na carga da página
   updateFreeShippingProgress();
   
-  // Observar mudanças no DOM para atualizações do carrinho
-  const observer = new MutationObserver(function(mutations) {
+  // Observar mudanças no DOM do carrinho para atualizar automaticamente
+  const cartObserver = new MutationObserver(function(mutations) {
+    let shouldUpdate = false;
+    
     mutations.forEach(function(mutation) {
-      if (mutation.type === 'childList' || mutation.type === 'subtree') {
-        updateFreeShippingProgress();
+      // Verificar se houve mudanças relevantes
+      if (mutation.type === 'childList') {
+        // Itens adicionados ou removidos
+        shouldUpdate = true;
+      } else if (mutation.type === 'attributes') {
+        // Atributos de preço ou quantidade alterados
+        if (mutation.attributeName === 'data-total-price' || 
+            mutation.attributeName === 'value' ||
+            mutation.target.classList.contains('cart__qty-input')) {
+          shouldUpdate = true;
+        }
+      } else if (mutation.type === 'characterData') {
+        // Texto de preços alterado
+        const parent = mutation.target.parentElement;
+        if (parent && (parent.classList.contains('money') || parent.classList.contains('cart__subtotal'))) {
+          shouldUpdate = true;
+        }
       }
+    });
+    
+    if (shouldUpdate) {
+      // Debounce para evitar múltiplas atualizações
+      clearTimeout(window.cartUpdateTimeout);
+      window.cartUpdateTimeout = setTimeout(() => {
+        updateFreeShippingProgress();
+        // Disparar evento customizado para outros scripts
+        document.dispatchEvent(new CustomEvent('cart:progress-updated', {
+          detail: { timestamp: Date.now() }
+        }));
+      }, 100);
+    }
+  });
+  
+  const cartContainer = document.querySelector('.cart');
+  if (cartContainer) {
+    cartObserver.observe(cartContainer, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      characterData: true,
+      attributeFilter: ['data-total-price', 'value', 'data-quantity']
+    });
+  }
+  
+  // Observar especificamente os inputs de quantidade
+  document.querySelectorAll('.cart__qty-input').forEach(input => {
+    input.addEventListener('input', debounce(() => {
+      updateFreeShippingProgress();
+    }, 300));
+    
+    input.addEventListener('change', () => {
+      updateFreeShippingProgress();
     });
   });
   
-  const cartElement = document.querySelector('.cart');
-  if (cartElement) {
-    observer.observe(cartElement, {
-      childList: true,
-      subtree: true
-    });
-  }
+  // Interceptar requisições AJAX do carrinho
+  const originalFetch = window.fetch;
+  window.fetch = function(...args) {
+    const url = args[0];
+    if (typeof url === 'string' && (url.includes('/cart') || url.includes('cart.js'))) {
+      return originalFetch.apply(this, args).then(response => {
+        if (response.ok) {
+          setTimeout(() => {
+            updateFreeShippingProgress();
+          }, 200);
+        }
+        return response;
+      });
+    }
+    return originalFetch.apply(this, args);
+  };
   
   // Melhorar experiência mobile
   if (window.innerWidth <= 749) {
@@ -247,29 +404,37 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Adicionar feedback de sucesso para ações
-  function showSuccessMessage(message) {
-    const successDiv = document.createElement('div');
-    successDiv.className = 'success-message';
-    successDiv.textContent = message;
-    successDiv.style.cssText = `
+  function showSuccessMessage(message, type = 'success') {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `cart-message cart-message--${type}`;
+    messageDiv.textContent = message;
+    messageDiv.setAttribute('role', 'alert');
+    messageDiv.setAttribute('aria-live', 'assertive');
+    
+    const bgColor = type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8';
+    messageDiv.style.cssText = `
       position: fixed;
       top: 20px;
       right: 20px;
-      background: #28a745;
+      background: ${bgColor};
       color: white;
       padding: 15px 20px;
-      border-radius: 4px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       z-index: 1000;
+      max-width: 300px;
+      font-size: 14px;
+      line-height: 1.4;
       animation: slideIn 0.3s ease;
     `;
     
-    document.body.appendChild(successDiv);
+    document.body.appendChild(messageDiv);
     
     setTimeout(() => {
-      successDiv.style.animation = 'slideOut 0.3s ease';
+      messageDiv.style.animation = 'slideOut 0.3s ease';
       setTimeout(() => {
-        if (successDiv.parentNode) {
-          successDiv.parentNode.removeChild(successDiv);
+        if (messageDiv.parentNode) {
+          messageDiv.parentNode.removeChild(messageDiv);
         }
       }, 300);
     }, 3000);
@@ -289,11 +454,25 @@ document.addEventListener('DOMContentLoaded', function() {
   `;
   document.head.appendChild(style);
   
+  // Função debounce para otimizar performance
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+  
   // Expor funções globalmente para uso em outros scripts
   window.cartCustom = {
     updateFreeShippingProgress,
     showSuccessMessage,
-    updatePageTitle
+    updatePageTitle,
+    debounce
   };
   
 });

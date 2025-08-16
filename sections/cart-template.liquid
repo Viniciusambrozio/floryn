@@ -186,14 +186,14 @@
             {% endif %}
             <!-- Barra de progresso para frete grátis -->
             <div class="cart__free-shipping-progress">
-              <div class="free-shipping-container">
+              <div class="free-shipping-container" role="region" aria-label="{{ 'cart.general.free_shipping_progress.progress_label' | t }}">
                 <div class="free-shipping-text">
-                  <span id="free-shipping-message">Faltam <span id="remaining-amount">R$ 0,00</span> para ganhar frete grátis!</span>
+                  <span id="free-shipping-message" aria-live="polite">{{ 'cart.general.free_shipping_progress.remaining_message' | t: amount: 'R$ 0,00' }}</span>
                 </div>
-                <div class="progress-bar-container">
+                <div class="progress-bar-container" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-labelledby="free-shipping-message">
                   <div class="progress-bar" id="progress-bar"></div>
                 </div>
-                <div class="free-shipping-threshold">R$ 300,00</div>
+                <div class="free-shipping-threshold">{{ 'cart.general.free_shipping_progress.threshold_label' | t: threshold: 'R$ 300,00' }}</div>
               </div>
             </div>
             <!-- Timer de expiração removido -->
