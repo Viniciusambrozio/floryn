@@ -406,6 +406,7 @@
   "shopify": {
     "checkout": {
       "order_summary": {
+        "free_shipping_discount_label": "PROMOÇÃO: FRETE GRÁTIS"
       },
       "general": {
         "continue_to_shipping_method": "CONTINUAR + FRETE GRÁTIS",
