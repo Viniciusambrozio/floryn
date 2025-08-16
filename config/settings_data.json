@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
     "product_key": "",
@@ -363,7 +372,6 @@
           "cart_notes_enable": false,
           "saved_price": true,
           "cart_enable": true,
-
           "shopping_payment": true,
           "cart_left_image": "",
           "cart_right_image": ""
@@ -432,14 +440,14 @@
             "type": "featured_collection",
             "settings": {
               "collection": "masculino",
-              "image": "shopify://shop_images/fundo_verde.png"
+              "image": "shopify://shop_images/FEMININO_1.png"
             }
           },
           "1522671586612-1": {
             "type": "featured_collection",
             "settings": {
               "collection": "feminino",
-              "image": "shopify://shop_images/fundo_verde.png"
+              "image": "shopify://shop_images/FEMININO.png"
             }
           }
         },
@@ -539,8 +547,7 @@
           "1557867595137-0": {
             "type": "image",
             "settings": {
-              "image": "shopify://shop_images/floryn-banner-desktop-1.jpg",
-              "image_mobile": "shopify://shop_images/floryn-banner-mobile-1.jpg",
+              "image": "shopify://shop_images/FLORYN_BANNERS_MOBILEBANNER_2_9fab0acf-d48a-4dde-867b-feab93d3b045.jpg",
               "alignment": "top",
               "title": "",
               "subheading": "",
@@ -551,8 +558,7 @@
           "1557867595137-1": {
             "type": "image",
             "settings": {
-              "image": "shopify://shop_images/floryn-banner-desktop-2.jpg",
-              "image_mobile": "shopify://shop_images/floryn-banner-mobile-2.jpg",
+              "image": "shopify://shop_images/FLORYN_BANNERS_MOBILEBANNER_1_e4c0a621-4b81-40a3-9270-d567eb8976ef.jpg",
               "alignment": "top",
               "title": "",
               "subheading": "",
@@ -563,9 +569,8 @@
           "image_P4NFMR": {
             "type": "image",
             "settings": {
-              "image": "shopify://shop_images/floryn-banner-desktop-3.jpg",
-              "image_mobile": "shopify://shop_images/floryn-banner-mobile-3.jpg",
-              "alignment": "center",
+              "image": "shopify://shop_images/FLORYN_BANNERS_MOBILEBANNER_3_496cba35-65c3-4835-81d3-f86ed7f8d768.jpg",
+              "alignment": "bottom",
               "title": "",
               "subheading": "",
               "button_label": "",
@@ -1050,7 +1055,6 @@
             "cart_notes_enable": true,
             "saved_price": true,
             "cart_enable": true,
-
             "shopping_payment": true,
             "cart_left_image": "shopify://shop_images/Booster-badges.png",
             "cart_right_image": "shopify://shop_images/Booster-badges_fdb54f46-a7ce-4299-b3eb-afecd0e53813.png"
@@ -1765,7 +1769,6 @@
             "cart_notes_enable": true,
             "saved_price": true,
             "cart_enable": true,
-
             "shopping_payment": true,
             "cart_left_image": "shopify://shop_images/Booster-badges.png",
             "cart_right_image": "shopify://shop_images/Booster-badges_fdb54f46-a7ce-4299-b3eb-afecd0e53813.png"
@@ -2468,7 +2471,6 @@
             "cart_notes_enable": true,
             "saved_price": true,
             "cart_enable": true,
-
             "shopping_payment": true,
             "cart_left_image": "shopify://shop_images/Booster-badges.png",
             "cart_right_image": "shopify://shop_images/Booster-badges_fdb54f46-a7ce-4299-b3eb-afecd0e53813.png"
