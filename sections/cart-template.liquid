@@ -1,3 +1,5 @@
+{{ 'cart-custom.css' | asset_url | stylesheet_tag }}
+{{ 'cart-custom.js' | asset_url | script_tag }}
 <div class="page-width" data-section-id="{{ section.id }}" data-section-type="cart-template">
 
   {% if cart.item_count > 0 %}
@@ -304,7 +306,6 @@
         "id": "cart_enable",
         "label": "Timer Enable"
       },
-      // Configurações do timer removidas
       {
         "type": "header",
         "content": "cart page images setting"
