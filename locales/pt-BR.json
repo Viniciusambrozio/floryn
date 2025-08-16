@@ -116,7 +116,6 @@
       "remove": "Remover",
       "subtotal": "Subtotal",
       "savings": "Você está economizando",
-      "shipping_at_checkout": "PROMOÇÃO: FRETE GRÁTIS",
       "update": "Atualizar",
       "checkout": "Finalizar compra",
       "empty": "Seu carrinho está vazio no momento.",
@@ -407,7 +406,6 @@
   "shopify": {
     "checkout": {
       "order_summary": {
-        "free_shipping_discount_label": "PROMOÇÃO: FRETE GRÁTIS"
       },
       "general": {
         "continue_to_shipping_method": "CONTINUAR + FRETE GRÁTIS",
