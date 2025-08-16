@@ -38,10 +38,24 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Função para atualizar a barra de progresso de frete grátis
   function updateFreeShippingProgress() {
+    const cartShipping = document.querySelector('.cart__shipping');
+    
+    // Verificar se a div cart__shipping existe
+    if (!cartShipping) {
+      console.log('Elemento .cart__shipping não encontrado - funcionalidade de frete grátis não disponível');
+      return;
+    }
+    
     const cartTotal = parseFloat(document.querySelector('.cart__subtotal .money')?.textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
     const freeShippingThreshold = 300.00; // R$ 300,00
     const progressBar = document.querySelector('.progress-bar');
     const freeShippingText = document.querySelector('.free-shipping-text');
+    
+    // Verificar se os elementos da barra de progresso existem
+    if (!progressBar || !freeShippingText) {
+      console.log('Elementos da barra de progresso não encontrados');
+      return;
+    }
     
     if (progressBar && freeShippingText) {
       const remaining = Math.max(0, freeShippingThreshold - cartTotal);
@@ -228,11 +242,14 @@ document.addEventListener('DOMContentLoaded', function() {
       // Debounce para evitar múltiplas atualizações
       clearTimeout(window.cartUpdateTimeout);
       window.cartUpdateTimeout = setTimeout(() => {
-        updateFreeShippingProgress();
-        // Disparar evento customizado para outros scripts
-        document.dispatchEvent(new CustomEvent('cart:progress-updated', {
-          detail: { timestamp: Date.now() }
-        }));
+        // Verificar se ainda existem elementos necessários antes de atualizar
+        if (document.querySelector('.cart__shipping')) {
+          updateFreeShippingProgress();
+          // Disparar evento customizado para outros scripts
+          document.dispatchEvent(new CustomEvent('cart:progress-updated', {
+            detail: { timestamp: Date.now() }
+          }));
+        }
       }, 100);
     }
   });
@@ -246,6 +263,8 @@ document.addEventListener('DOMContentLoaded', function() {
       characterData: true,
       attributeFilter: ['data-total-price', 'value', 'data-quantity']
     });
+  } else {
+    console.log('Elemento .cart não encontrado - observer não será iniciado');
   }
   
   // Observar especificamente os inputs de quantidade
