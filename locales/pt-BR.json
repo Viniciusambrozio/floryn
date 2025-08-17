@@ -406,7 +406,7 @@
   "shopify": {
     "checkout": {
       "order_summary": {
-        "free_shipping_discount_label": "PROMOÇÃO: FRETE GRÁTIS"
+        "free_shipping_discount_label": "PROMOÇÃO: FRETE GRÁTIS EM PEDIDOS ACIMA DE R$ 300,00"
       },
       "general": {
         "continue_to_shipping_method": "CONTINUAR + FRETE GRÁTIS",
